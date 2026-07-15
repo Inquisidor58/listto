@@ -2,11 +2,16 @@ import { useState } from 'react'
 import { api } from '../services/api'
 
 const AVATAR_COLORS = ['#6366f1', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#ec4899', '#84cc16']
+const VOWELS = new Set(['A', 'E', 'I', 'O', 'U', 'Á', 'É', 'Í', 'Ó', 'Ú'])
 
 function getAvatarColor(name) {
   let hash = 0
   for (let i = 0; i < (name || '').length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash)
   return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length]
+}
+
+function getConsonants(name) {
+  return (name || '').toUpperCase().split('').filter(c => c >= 'A' && c <= 'Z' && !VOWELS.has(c)).slice(0, 2).join('')
 }
 
 export default function UserSelector({ users, currentUser, onUserChange, onUsersUpdate }) {
@@ -15,7 +20,7 @@ export default function UserSelector({ users, currentUser, onUserChange, onUsers
   const [newName, setNewName] = useState('')
 
   const displayName = currentUser?.alias || currentUser?.name || 'Usuario'
-  const initials = displayName.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase()
+  const initials = getConsonants(displayName) || displayName[0].toUpperCase()
   const avatarColor = getAvatarColor(displayName)
 
   const handleCreate = async (e) => {
@@ -60,7 +65,7 @@ export default function UserSelector({ users, currentUser, onUserChange, onUsers
                   className={currentUser?.id === u.id ? 'active' : ''}
                   onClick={() => handleSelect(u)}
                 >
-                  <span className="user-avatar-sm" style={{ background: getAvatarColor(u.alias || u.name) }}>{(u.alias || u.name).split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase()}</span>
+                  <span className="user-avatar-sm" style={{ background: getAvatarColor(u.alias || u.name) }}>{getConsonants(u.alias || u.name) || (u.alias || u.name)[0].toUpperCase()}</span>
                   {u.alias || u.name}
                 </li>
               ))}
