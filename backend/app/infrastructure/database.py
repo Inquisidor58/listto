@@ -4,7 +4,14 @@ from sqlalchemy.orm import Session, sessionmaker, DeclarativeBase
 from app.config import settings
 
 
-engine = create_engine(settings.database_url, echo=False)
+def _get_engine():
+    url = settings.database_url
+    if url.startswith("postgresql+asyncpg"):
+        url = url.replace("+asyncpg", "+pg8000")
+    return create_engine(url, echo=False)
+
+
+engine = _get_engine()
 SessionLocal = sessionmaker(engine, expire_on_commit=False)
 
 
