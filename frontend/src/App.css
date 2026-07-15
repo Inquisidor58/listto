@@ -276,6 +276,21 @@ body {
 }
 .filters .btn-primary:hover { background: #4f46e5; }
 
+.filters .btn-uncheck {
+  flex: 0 0 auto;
+  background: #10b981;
+  color: #fff;
+  border: none;
+  padding: 6px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 700;
+  transition: all 0.2s;
+  line-height: 1;
+}
+.filters .btn-uncheck:hover { background: #059669; }
+
 /* ─── ITEM FORM ─── */
 .item-form {
   display: flex;

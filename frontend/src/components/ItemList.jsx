@@ -112,9 +112,19 @@ export default function ItemList({ currentUser }) {
     const nameTrimmed = form.name.trim()
     if (!nameTrimmed) return
 
-    if (!editingId && items.some(i => i.name.toLowerCase() === nameTrimmed.toLowerCase())) {
-      alert(`"${nameTrimmed}" ya está en la lista`)
-      return
+    if (!editingId) {
+      const existing = items.find(i => i.name.toLowerCase() === nameTrimmed.toLowerCase())
+      if (existing) {
+        if (existing.checked) {
+          await api.toggleItem(existing.id)
+          alert(`"${nameTrimmed}" ya estaba comprada — se desmarcó`)
+          loadItems()
+        } else {
+          alert(`"${nameTrimmed}" ya está en la lista`)
+        }
+        setForm({ name: '', quantity: 1, url: '', category_id: '', store_id: '', notes: '' })
+        return
+      }
     }
 
     const payload = {
@@ -182,6 +192,12 @@ export default function ItemList({ currentUser }) {
         <button className="btn-primary" onClick={() => { setShowForm(!showForm); setEditingId(null); setForm({ name: '', quantity: 1, url: '', category_id: '', store_id: '', notes: '' }) }}>
           {showForm ? '✕' : '+ Agregar'}
         </button>
+        <button className="btn-uncheck" onClick={async () => {
+          const checked = items.filter(i => i.checked)
+          if (!checked.length) return
+          for (const item of checked) await api.toggleItem(item.id)
+          loadItems()
+        }} title="Deseleccionar todo">✓✓</button>
       </div>
 
       {showForm && (
