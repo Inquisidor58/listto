@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api import categories, exchange, items, stores, users
+from app.api import categories, exchange, health, items, stores, users
 from app.config import settings
 from app.infrastructure.database import engine, Base
 
@@ -20,6 +20,7 @@ app.include_router(categories.router)
 app.include_router(stores.router)
 app.include_router(users.router)
 app.include_router(exchange.router)
+app.include_router(health.router)
 
 
 @app.on_event("startup")
