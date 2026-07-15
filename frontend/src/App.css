@@ -224,11 +224,11 @@ body {
 /* ─── FILTERS ─── */
 .filters select {
   flex: 1;
-  min-width: 100px;
-  padding: 8px 10px;
+  min-width: 60px;
+  padding: 6px 8px;
   border: 1px solid rgba(203, 213, 225, 0.5);
-  border-radius: 10px;
-  font-size: 14px;
+  border-radius: 8px;
+  font-size: 13px;
   background: rgba(255, 255, 255, 0.5);
   backdrop-filter: blur(8px);
   color: #1e293b;
@@ -241,14 +241,15 @@ body {
   background: #6366f1;
   color: #fff;
   border: none;
-  padding: 8px 16px;
-  border-radius: 10px;
+  padding: 6px 10px;
+  border-radius: 8px;
   cursor: pointer;
-  font-size: 0.8125rem;
+  font-size: 13px;
   font-weight: 600;
   transition: all 0.2s;
+  white-space: nowrap;
 }
-.filters .btn-primary:hover { background: #4f46e5; transform: translateY(-1px); }
+.filters .btn-primary:hover { background: #4f46e5; }
 
 /* ─── ITEM FORM ─── */
 .item-form {

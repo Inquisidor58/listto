@@ -172,7 +172,7 @@ export default function ItemList({ currentUser }) {
           <option value="true">Comprados</option>
         </select>
         <button className="btn-primary" onClick={() => { setShowForm(!showForm); setEditingId(null); setForm({ name: '', quantity: 1, url: '', category_id: '', store_id: '', notes: '' }) }}>
-          {showForm ? 'Cancelar' : '+ Nuevo'}
+          {showForm ? '✕' : '+ Agregar'}
         </button>
       </div>
 
