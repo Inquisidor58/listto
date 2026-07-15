@@ -273,7 +273,7 @@ class ItemRepository(IItemRepository):
     def create(self, item: Item) -> Item:
         if USE_SUPABASE:
             from app.infrastructure.supabase import supabase_insert as ins
-            data = _model_kwargs(item)
+            data = {k: v for k, v in _model_kwargs(item).items() if v is not None}
             data.pop("id", None)
             data.pop("created_at", None)
             row = ins("items", data)
