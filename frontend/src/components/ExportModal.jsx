@@ -23,27 +23,12 @@ export default function ExportModal({ onClose }) {
     })
   }, [])
 
-  const grouped = groupBy === 'store' ? groupByStore(items, storeMap, catMap) : groupByCategory(items, storeMap, catMap)
-
-  const text = grouped
-    .map((group) => {
-      const header = groupBy === 'store' ? `🛒 ${group.name}` : `📂 ${group.name}`
-      const lines = group.items.map((item) => {
-        let line = `  • ${item.name}`
-        if (item.quantity > 1) line += ` ×${item.quantity}`
-        if (groupBy === 'store' && item._cat) line += ` (${item._cat})`
-        if (groupBy === 'category' && item._store) line += ` (${item._store})`
-        if (item.notes) line += ` — ${item.notes}`
-        return line
-      })
-      return `${header}\n${lines.join('\n')}`
-    })
-    .join('\n\n')
+  const groups = buildGroups(items, groupBy, storeMap, catMap)
+  const text = formatText(groups)
 
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(text)
-      textRef.current?.select()
     } catch {
       if (textRef.current) {
         textRef.current.select()
@@ -83,28 +68,29 @@ export default function ExportModal({ onClose }) {
   )
 }
 
-function groupByStore(items, storeMap, catMap) {
+const ICONS = { store: '🛒', category: '📂' }
+
+function buildGroups(items, groupBy, storeMap, catMap) {
   const groups = {}
   for (const item of items) {
-    const key = item.store_id || '00000000-0000-0000-0000-000000000000'
-    const name = storeMap[item.store_id] || 'Sin tienda'
+    const key = groupBy === 'store' ? (item.store_id || 'sin') : (item.category_id || 'sin')
+    const name = groupBy === 'store'
+      ? (storeMap[item.store_id] || '')
+      : (catMap[item.category_id] || '')
+    if (!name) continue
     if (!groups[key]) groups[key] = { name, items: [] }
-    groups[key].items.push({ ...item, _cat: catMap[item.category_id] || '' })
+    groups[key].items.push(item)
   }
-  return Object.entries(groups)
-    .sort(([a], [b]) => (a === '00000000-0000-0000-0000-000000000000' ? 1 : b === '00000000-0000-0000-0000-000000000000' ? -1 : 0))
-    .map(([, v]) => v)
+  return Object.values(groups).sort((a, b) => a.name.localeCompare(b.name))
 }
 
-function groupByCategory(items, storeMap, catMap) {
-  const groups = {}
-  for (const item of items) {
-    const key = item.category_id || '00000000-0000-0000-0000-000000000000'
-    const name = catMap[item.category_id] || 'Sin categoría'
-    if (!groups[key]) groups[key] = { name, items: [] }
-    groups[key].items.push({ ...item, _store: storeMap[item.store_id] || '' })
-  }
-  return Object.entries(groups)
-    .sort(([a], [b]) => (a === '00000000-0000-0000-0000-000000000000' ? 1 : b === '00000000-0000-0000-0000-000000000000' ? -1 : 0))
-    .map(([, v]) => v)
+function formatText(groups) {
+  return groups.map((g) => {
+    const lines = g.items.map((item) => {
+      let line = `  • ${item.name}`
+      if (item.quantity > 1) line += ` ×${item.quantity}`
+      return line
+    })
+    return `${g.name}\n${lines.join('\n')}`
+  }).join('\n\n')
 }
