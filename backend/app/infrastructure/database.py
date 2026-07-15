@@ -16,7 +16,7 @@ def _get_engine():
         pw = (parsed.password or "").replace("Li2025st2026%2A", "Li2026stToAPP").replace("Li2025st2026*", "Li2026stToAPP")
         project_ref = parsed.hostname.replace("db.", "").replace(".supabase.co", "")
         url = (
-            f"postgresql+pg8000://{parsed.username}.{project_ref}:{quote(pw, safe='')}"
+            f"postgresql+pg8000://{project_ref}.{parsed.username}:{quote(pw, safe='')}"
             f"@aws-0-us-east-2.pooler.supabase.com:6543/postgres"
         )
 
