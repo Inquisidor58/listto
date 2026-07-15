@@ -38,6 +38,9 @@ def _row_to_model(table: str, row: dict, model_cls):
     for col, enum_cls in enum_map.items():
         if col in data and isinstance(data[col], str):
             data[col] = enum_cls(data[col])
+    for k, v in list(data.items()):
+        if v is None or v == "":
+            data.pop(k)
     return model_cls(**data)
 
 USE_SUPABASE = bool(settings.supabase_url and settings.supabase_key)
