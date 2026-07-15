@@ -1,7 +1,9 @@
+import traceback
 import uuid
 from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.responses import JSONResponse
 
 from app.application.services import ItemService
 from app.api.deps import get_item_service

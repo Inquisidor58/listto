@@ -41,7 +41,16 @@ def _row_to_model(table: str, row: dict, model_cls):
     for k, v in list(data.items()):
         if v is None or v == "":
             data.pop(k)
-    return model_cls(**data)
+    instance = model_cls(**data)
+    for col in instance.__table__.columns:
+        val = getattr(instance, col.name)
+        if val is None and col.default is not None:
+            try:
+                d = col.default.arg
+                setattr(instance, col.name, d() if callable(d) else d)
+            except Exception:
+                pass
+    return instance
 
 USE_SUPABASE = bool(settings.supabase_url and settings.supabase_key)
 
