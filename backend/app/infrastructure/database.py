@@ -6,9 +6,8 @@ from app.config import settings
 
 def _get_engine():
     url = settings.database_url
-    if url.startswith("postgresql+asyncpg"):
+    if "+asyncpg" in url:
         url = url.replace("+asyncpg", "+pg8000")
-    url = url.replace("%2A", "*").replace("%2a", "*")
     return create_engine(url, echo=False)
 
 
