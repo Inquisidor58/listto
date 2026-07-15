@@ -67,7 +67,11 @@ def supabase_get_by_id(table: str, id_val: uuid.UUID) -> Optional[dict]:
 
 def supabase_insert(table: str, data: dict) -> dict:
     client = _get_client()
-    resp = client.post(f"/{table}", content=json.dumps(data, default=str))
+    resp = client.post(
+        f"/{table}",
+        content=json.dumps(data, default=str),
+        headers={"Prefer": "return=representation"},
+    )
     resp.raise_for_status()
     rows = resp.json()
     return parse_row(rows[0]) if rows else {}
@@ -75,7 +79,12 @@ def supabase_insert(table: str, data: dict) -> dict:
 
 def supabase_update(table: str, id_val: uuid.UUID, data: dict) -> Optional[dict]:
     client = _get_client()
-    resp = client.patch(f"/{table}", params={"id": f"eq.{id_val}"}, content=json.dumps(data, default=str))
+    resp = client.patch(
+        f"/{table}",
+        params={"id": f"eq.{id_val}"},
+        content=json.dumps(data, default=str),
+        headers={"Prefer": "return=representation"},
+    )
     resp.raise_for_status()
     rows = resp.json()
     return parse_row(rows[0]) if rows else None
