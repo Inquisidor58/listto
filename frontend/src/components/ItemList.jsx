@@ -109,8 +109,16 @@ export default function ItemList({ currentUser }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    const nameTrimmed = form.name.trim()
+    if (!nameTrimmed) return
+
+    if (!editingId && items.some(i => i.name.toLowerCase() === nameTrimmed.toLowerCase())) {
+      alert(`"${nameTrimmed}" ya está en la lista`)
+      return
+    }
+
     const payload = {
-      name: form.name,
+      name: nameTrimmed,
       notes: form.notes || null,
     }
     if (isMercado) {
