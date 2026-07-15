@@ -3,7 +3,7 @@ from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException
 
-from app.application.services import ItemService, extract_image_url
+from app.application.services import ItemService
 from app.api.deps import get_item_service
 from app.domain.models import ListType
 from app.domain.schemas import ItemCreate, ItemResponse, ItemUpdate
@@ -32,24 +32,14 @@ def get_item(item_id: uuid.UUID, service: ItemService = Depends(get_item_service
 
 @router.post("", response_model=ItemResponse, status_code=201)
 def create_item(data: ItemCreate, service: ItemService = Depends(get_item_service)):
-    item = service.create(data.model_dump())
-    if item.url:
-        image_url = extract_image_url(item.url)
-        if image_url:
-            item = service.update_image(item.id, image_url)
-    return item
+    return service.create(data.model_dump())
 
 
 @router.patch("/{item_id}", response_model=ItemResponse)
 def update_item(item_id: uuid.UUID, data: ItemUpdate, service: ItemService = Depends(get_item_service)):
-    existing = service.get_by_id(item_id)
-    if not existing:
-        raise HTTPException(404, "Item not found")
     item = service.update(item_id, data.model_dump(exclude_unset=True))
-    if data.url and data.url != (existing.url or ""):
-        image_url = extract_image_url(data.url)
-        if image_url:
-            item = service.update_image(item_id, image_url)
+    if not item:
+        raise HTTPException(404, "Item not found")
     return item
 
 

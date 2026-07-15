@@ -1,26 +1,8 @@
 import uuid
 from typing import List, Optional
 
-import httpx
-from bs4 import BeautifulSoup
-
 from app.domain.interfaces import ICategoryRepository, IItemRepository, IStoreRepository, IUserRepository
 from app.domain.models import Category, Item, ListType, Store, StoreType, User
-
-
-def extract_image_url(url: str) -> Optional[str]:
-    try:
-        resp = httpx.get(url, timeout=8, follow_redirects=True, headers={"User-Agent": "Mozilla/5.0"})
-        if resp.status_code != 200:
-            return None
-        soup = BeautifulSoup(resp.text, "html.parser")
-        for prop in ("og:image", "twitter:image"):
-            meta = soup.find("meta", property=prop) or soup.find("meta", attrs={"name": prop})
-            if meta and meta.get("content"):
-                return meta["content"]
-    except Exception:
-        return None
-    return None
 
 
 class UserService:
@@ -93,9 +75,6 @@ class ItemService:
 
     def update(self, item_id: uuid.UUID, data: dict) -> Optional[Item]:
         return self._repo.update(item_id, data)
-
-    def update_image(self, item_id: uuid.UUID, image_url: str) -> Optional[Item]:
-        return self._repo.update(item_id, {"image_url": image_url})
 
     def delete(self, item_id: uuid.UUID) -> None:
         self._repo.delete(item_id)
