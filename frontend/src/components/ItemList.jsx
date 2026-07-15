@@ -34,6 +34,7 @@ export default function ItemList({ currentUser }) {
   const [filterStore, setFilterStore] = useState('')
   const [filterChecked, setFilterChecked] = useState('false')
   const [showForm, setShowForm] = useState(false)
+  const [editingId, setEditingId] = useState(null)
 
   const [form, setForm] = useState({
     name: '', quantity: 1, url: '', category_id: '', store_id: '', notes: '',
@@ -93,13 +94,24 @@ export default function ItemList({ currentUser }) {
     loadItems()
   }
 
+  const handleEdit = (item) => {
+    setForm({
+      name: item.name,
+      quantity: item.quantity || 1,
+      url: item.url || '',
+      category_id: item.category_id || '',
+      store_id: item.store_id || '',
+      notes: item.notes || '',
+    })
+    setEditingId(item.id)
+    setShowForm(true)
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     const payload = {
-      list_type: listType,
       name: form.name,
       notes: form.notes || null,
-      user_id: currentUser?.id || null,
     }
     if (isMercado) {
       payload.quantity = form.quantity
@@ -109,9 +121,16 @@ export default function ItemList({ currentUser }) {
     if (isOnline) {
       payload.url = form.url || null
     }
-    await api.createItem(payload)
+    if (editingId) {
+      await api.updateItem(editingId, payload)
+    } else {
+      payload.list_type = listType
+      payload.user_id = currentUser?.id || null
+      await api.createItem(payload)
+    }
     setForm({ name: '', quantity: 1, url: '', category_id: '', store_id: '', notes: '' })
     setShowForm(false)
+    setEditingId(null)
     loadItems()
   }
 
@@ -152,7 +171,7 @@ export default function ItemList({ currentUser }) {
           <option value="">Todos</option>
           <option value="true">Comprados</option>
         </select>
-        <button className="btn-primary" onClick={() => setShowForm(!showForm)}>
+        <button className="btn-primary" onClick={() => { setShowForm(!showForm); setEditingId(null); setForm({ name: '', quantity: 1, url: '', category_id: '', store_id: '', notes: '' }) }}>
           {showForm ? 'Cancelar' : '+ Nuevo'}
         </button>
       </div>
@@ -194,7 +213,7 @@ export default function ItemList({ currentUser }) {
 
           <input placeholder="Notas (opcional)" value={form.notes}
             onChange={(e) => setForm({ ...form, notes: e.target.value })} />
-          <button type="submit">Agregar a {TABS.find(t => t.key === listType)?.label}</button>
+          <button type="submit">{editingId ? 'Guardar cambios' : `Agregar a ${TABS.find(t => t.key === listType)?.label}`}</button>
         </form>
       )}
 
@@ -237,7 +256,10 @@ export default function ItemList({ currentUser }) {
                 </a>
               )}
             </div>
-            <button className="btn-delete" onClick={() => handleDelete(item.id)}>✕</button>
+            <div className="item-actions">
+              <button className="btn-edit" onClick={() => handleEdit(item)}>✎</button>
+              <button className="btn-delete" onClick={() => handleDelete(item.id)}>✕</button>
+            </div>
           </li>
           )
         })}

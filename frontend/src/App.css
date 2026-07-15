@@ -384,6 +384,20 @@ body {
 }
 .btn-delete:hover { color: #ef4444; background: rgba(239, 68, 68, 0.08); }
 
+.item-actions { display: flex; gap: 2px; flex-shrink: 0; }
+.btn-edit {
+  background: none; border: none;
+  color: #cbd5e1;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 4px;
+  transition: color 0.2s;
+  border-radius: 50%;
+  width: 32px; height: 32px;
+  display: flex; align-items: center; justify-content: center;
+}
+.btn-edit:hover { color: #6366f1; background: rgba(99, 102, 241, 0.08); }
+
 .empty {
   text-align: center;
   color: #94a3b8;
