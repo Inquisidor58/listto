@@ -70,6 +70,7 @@ function App() {
           <NavLink to="/categories">Categorías</NavLink>
           <NavLink to="/stores">Tiendas</NavLink>
           <button className="nav-btn" onClick={() => setShowExport(true)}>Exportar</button>
+          <button className="nav-btn" onClick={() => window.__uncheckAll?.()}>Desmarcar</button>
         </nav>
       </header>
 

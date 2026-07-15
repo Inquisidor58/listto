@@ -152,6 +152,16 @@ export default function ItemList({ currentUser }) {
     loadItems()
   }
 
+  const handleUncheckAll = async () => {
+    for (const item of items.filter(i => i.checked)) await api.toggleItem(item.id)
+    loadItems()
+  }
+
+  useEffect(() => {
+    window.__uncheckAll = handleUncheckAll
+    return () => { delete window.__uncheckAll }
+  }, [items])
+
   return (
     <div className="item-list">
       <div className="list-tabs">
@@ -192,12 +202,6 @@ export default function ItemList({ currentUser }) {
         <button className="btn-primary" onClick={() => { setShowForm(!showForm); setEditingId(null); setForm({ name: '', quantity: 1, url: '', category_id: '', store_id: '', notes: '' }) }}>
           {showForm ? '✕' : '+ Agregar'}
         </button>
-        <button className="btn-uncheck" onClick={async () => {
-          const checked = items.filter(i => i.checked)
-          if (!checked.length) return
-          for (const item of checked) await api.toggleItem(item.id)
-          loadItems()
-        }} title="Deseleccionar todo">✓✓</button>
       </div>
 
       {showForm && (
