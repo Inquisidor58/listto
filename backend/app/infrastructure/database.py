@@ -8,6 +8,9 @@ def _get_engine():
     url = settings.database_url
     if "+asyncpg" in url:
         url = url.replace("+asyncpg", "+pg8000")
+    if "pg8000" in url:
+        url = url.replace(":5432/", ":6543/")
+        url = url.replace("%2A", "*").replace("%2a", "*")
     return create_engine(url, echo=False)
 
 
