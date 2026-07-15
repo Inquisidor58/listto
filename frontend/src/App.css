@@ -58,6 +58,8 @@ body {
   letter-spacing: -0.5px;
 }
 
+.logo { height: 32px; width: auto; display: block; }
+
 .exchange-rate {
   display: flex;
   align-items: center;
@@ -214,7 +216,7 @@ body {
 .list-tab:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.06); border-color: rgba(255,255,255,0.6); }
 .list-tab.active { color: #fff; border-color: transparent; transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
 
-.list-tab.tab-mercado.active { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+.list-tab.tab-mercado.active { background: linear-gradient(135deg, #fbbf24, #f59e0b); }
 .list-tab.tab-online.active { background: linear-gradient(135deg, #10b981, #059669); }
 .list-tab.tab-deseos.active { background: linear-gradient(135deg, #f59e0b, #d97706); }
 
@@ -335,7 +337,7 @@ body {
   font-weight: 500;
   margin-right: 4px;
 }
-.item-tag.tag-mercado { background: rgba(59, 130, 246, 0.12); color: #2563eb; }
+.item-tag.tag-mercado { background: rgba(245, 158, 11, 0.12); color: #d97706; }
 .item-tag.tag-online { background: rgba(16, 185, 129, 0.12); color: #059669; }
 .item-tag.tag-deseos { background: rgba(245, 158, 11, 0.12); color: #d97706; }
 
@@ -384,19 +386,22 @@ body {
 }
 .btn-delete:hover { color: #ef4444; background: rgba(239, 68, 68, 0.08); }
 
-.item-actions { display: flex; gap: 2px; flex-shrink: 0; }
-.btn-edit {
-  background: none; border: none;
-  color: #cbd5e1;
+.item-actions { display: flex; gap: 4px; flex-shrink: 0; }
+.btn-edit, .btn-delete {
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(203, 213, 225, 0.5);
   cursor: pointer;
-  font-size: 1rem;
-  padding: 4px;
-  transition: color 0.2s;
-  border-radius: 50%;
-  width: 32px; height: 32px;
+  font-size: 1.05rem;
+  padding: 0;
+  transition: all 0.2s;
+  border-radius: 10px;
+  width: 36px; height: 36px;
   display: flex; align-items: center; justify-content: center;
 }
-.btn-edit:hover { color: #6366f1; background: rgba(99, 102, 241, 0.08); }
+.btn-edit { color: #6366f1; }
+.btn-edit:hover { background: #6366f1; color: #fff; border-color: #6366f1; }
+.btn-delete { color: #ef4444; }
+.btn-delete:hover { background: #ef4444; color: #fff; border-color: #ef4444; }
 
 .empty {
   text-align: center;

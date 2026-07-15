@@ -49,7 +49,7 @@ function App() {
       <header className="header">
         <div className="header-top">
           <div className="header-left">
-            <h1>ListTo</h1>
+            <img src="/logo.png" alt="ListTo" className="logo" />
           </div>
           <div className="header-right">
             {usdRate && (
