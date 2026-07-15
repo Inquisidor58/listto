@@ -70,7 +70,11 @@ function App() {
           <NavLink to="/categories">Categorías</NavLink>
           <NavLink to="/stores">Tiendas</NavLink>
           <button className="nav-btn" onClick={() => setShowExport(true)}>Exportar</button>
-          <button className="nav-btn" onClick={() => window.__uncheckAll?.()} title="Desmarcar todo">✓✓</button>
+          <button className="nav-btn" onClick={() => {
+            const count = window.__getCheckedCount?.()
+            if (!count) return
+            if (confirm(`¿Desmarcar ${count} item${count !== 1 ? 's' : ''}?`)) window.__uncheckAll?.()
+          }} title="Desmarcar todo">✓✓</button>
         </nav>
       </header>
 

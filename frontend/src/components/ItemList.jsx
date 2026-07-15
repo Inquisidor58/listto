@@ -159,7 +159,8 @@ export default function ItemList({ currentUser }) {
 
   useEffect(() => {
     window.__uncheckAll = handleUncheckAll
-    return () => { delete window.__uncheckAll }
+    window.__getCheckedCount = () => items.filter(i => i.checked).length
+    return () => { delete window.__uncheckAll; delete window.__getCheckedCount }
   }, [items])
 
   return (
