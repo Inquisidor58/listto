@@ -77,7 +77,7 @@ body {
   margin-top: 10px;
 }
 
-.nav a {
+.nav a, .nav-btn {
   text-decoration: none;
   padding: 6px 14px;
   border-radius: 10px;
@@ -85,9 +85,13 @@ body {
   font-weight: 500;
   color: #94a3b8;
   transition: all 0.2s;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
 }
 
-.nav a:hover { background: rgba(99, 102, 241, 0.08); color: #6366f1; }
+.nav a:hover, .nav-btn:hover { background: rgba(99, 102, 241, 0.08); color: #6366f1; }
 .nav a.active { background: rgba(99, 102, 241, 0.12); color: #6366f1; font-weight: 600; }
 
 /* ─── USER SELECTOR ─── */
@@ -190,12 +194,12 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
-  padding: 12px 8px;
+  gap: 2px;
+  padding: 8px 4px;
   border: 1px solid rgba(255, 255, 255, 0.4);
-  border-radius: 16px;
+  border-radius: 12px;
   cursor: pointer;
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   font-weight: 500;
   color: #94a3b8;
   background: rgba(255, 255, 255, 0.4);
@@ -204,8 +208,8 @@ body {
   box-shadow: 0 1px 3px rgba(0,0,0,0.04);
 }
 
-.list-tab .tab-icon { font-size: 1.4rem; }
-.list-tab .tab-label { font-size: 0.75rem; font-weight: 600; }
+.list-tab .tab-icon { font-size: 1.1rem; }
+.list-tab .tab-label { font-size: 0.65rem; font-weight: 600; }
 
 .list-tab:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.06); border-color: rgba(255,255,255,0.6); }
 .list-tab.active { color: #fff; border-color: transparent; transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
@@ -464,3 +468,51 @@ body {
 .btn-sm:hover { background: rgba(255, 255, 255, 0.8); border-color: #cbd5e1; }
 .btn-danger { color: #ef4444; border-color: rgba(239, 68, 68, 0.2); }
 .btn-danger:hover { background: rgba(239, 68, 68, 0.08); border-color: rgba(239, 68, 68, 0.3); }
+
+/* ─── MODAL ─── */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 50;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px;
+}
+.modal {
+  background: #fff;
+  border-radius: 20px;
+  padding: 24px;
+  width: 100%;
+  max-width: 480px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.15);
+  animation: slideUp 0.25s ease;
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.modal-header {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 16px;
+}
+.modal-header h3 { font-size: 1.125rem; color: #1e293b; }
+.modal-close {
+  background: none; border: none; font-size: 1.25rem;
+  color: #94a3b8; cursor: pointer; padding: 4px 8px;
+}
+.modal-options {
+  display: flex; align-items: center; gap: 8px; margin-bottom: 12px;
+}
+.modal-options label { font-size: 0.8125rem; color: #64748b; font-weight: 500; }
+.modal-options select {
+  flex: 1; padding: 6px 10px; border: 1px solid #e2e8f0;
+  border-radius: 8px; font-size: 0.8125rem; outline: none;
+}
+.modal-text {
+  width: 100%; padding: 12px; border: 1px solid #e2e8f0;
+  border-radius: 12px; font-size: 0.875rem; font-family: -apple-system, monospace;
+  line-height: 1.5; resize: vertical; margin-bottom: 12px; outline: none;
+  background: #f8fafc; color: #1e293b;
+}
+.modal-empty { text-align: center; color: #94a3b8; padding: 24px; }

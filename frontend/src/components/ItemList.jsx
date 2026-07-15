@@ -5,8 +5,22 @@ function extractDomain(url) {
   try { return new URL(url).hostname.replace('www.', '') } catch { return null }
 }
 
+const STORE_COLORS = [
+  '#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6',
+  '#ec4899', '#06b6d4', '#84cc16', '#f97316', '#6366f1',
+  '#14b8a6', '#a855f7', '#e11d48', '#65a30d', '#ea580c',
+]
+
+function getStoreColor(name) {
+  let hash = 0
+  for (let i = 0; i < (name || '').length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash)
+  }
+  return STORE_COLORS[Math.abs(hash) % STORE_COLORS.length]
+}
+
 const TABS = [
-  { key: 'mercado', icon: '🛒', label: 'Mercado' },
+  { key: 'otros', icon: '📋', label: 'Otros' },
   { key: 'online', icon: '📦', label: 'Online' },
   { key: 'deseos', icon: '✨', label: 'Deseos' },
 ]
@@ -15,7 +29,7 @@ export default function ItemList({ currentUser }) {
   const [items, setItems] = useState([])
   const [categories, setCategories] = useState([])
   const [stores, setStores] = useState([])
-  const [listType, setListType] = useState('mercado')
+  const [listType, setListType] = useState('otros')
   const [filterCat, setFilterCat] = useState('')
   const [filterStore, setFilterStore] = useState('')
   const [filterChecked, setFilterChecked] = useState('false')
@@ -28,10 +42,10 @@ export default function ItemList({ currentUser }) {
   const catMap = Object.fromEntries(categories.map((c) => [c.id, c.name]))
   const storeMap = Object.fromEntries(stores.map((s) => [s.id, s.name]))
 
-  const isMercado = listType === 'mercado'
+  const isOtros = listType === 'otros'
   const isOnline = listType === 'online'
   const isDeseos = listType === 'deseos'
-  const tagClass = isMercado ? 'tag-mercado' : isOnline ? 'tag-online' : 'tag-deseos'
+  const tagClass = isOtros ? 'tag-mercado' : isOnline ? 'tag-online' : 'tag-deseos'
 
   useEffect(() => {
     api.getCategories().then(setCategories).catch(() => {})
@@ -46,14 +60,27 @@ export default function ItemList({ currentUser }) {
   }, [listType, filterCat, filterStore, filterChecked])
 
   const loadItems = async () => {
-    const params = { list_type: listType }
+    const params = { list_type: listType === 'otros' ? 'mercado' : listType }
     if (filterCat) params.category_id = filterCat
     if (filterStore) params.store_id = filterStore
     if (filterChecked !== '') params.checked = filterChecked === 'true'
     try {
       const data = await api.getItems(params)
-      setItems(data)
+      setItems(sortItems(data, listType))
     } catch { setItems([]) }
+  }
+
+  const sortItems = (data, type) => {
+    if (type !== 'otros') return data
+    return [...data].sort((a, b) => {
+      const sa = (storeMap[a.store_id] || '').toLowerCase()
+      const sb = (storeMap[b.store_id] || '').toLowerCase()
+      if (sa !== sb) return sa.localeCompare(sb)
+      const ca = (catMap[a.category_id] || '').toLowerCase()
+      const cb = (catMap[b.category_id] || '').toLowerCase()
+      if (ca !== cb) return ca.localeCompare(cb)
+      return a.name.toLowerCase().localeCompare(b.name.toLowerCase())
+    })
   }
 
   const handleToggle = async (id) => {
@@ -69,12 +96,12 @@ export default function ItemList({ currentUser }) {
   const handleSubmit = async (e) => {
     e.preventDefault()
     const payload = {
-      list_type: listType,
+      list_type: listType === 'otros' ? 'mercado' : listType,
       name: form.name,
       notes: form.notes || null,
       user_id: currentUser?.id || null,
     }
-    if (isMercado) {
+    if (isOtros) {
       payload.quantity = form.quantity
       payload.category_id = form.category_id || null
       payload.store_id = form.store_id || null
@@ -94,7 +121,7 @@ export default function ItemList({ currentUser }) {
         {TABS.map((tab) => (
           <button
             key={tab.key}
-            className={`list-tab tab-${tab.key} ${listType === tab.key ? 'active' : ''}`}
+            className={`list-tab tab-${tab.key === 'otros' ? 'mercado' : tab.key} ${listType === tab.key ? 'active' : ''}`}
             onClick={() => { setListType(tab.key); setFilterCat(''); setFilterStore(''); setFilterChecked('false') }}
           >
             <span className="tab-icon">{tab.icon}</span>
@@ -104,7 +131,7 @@ export default function ItemList({ currentUser }) {
       </div>
 
       <div className="filters">
-        {isMercado && (
+        {isOtros && (
           <>
             <select value={filterCat} onChange={(e) => setFilterCat(e.target.value)}>
               <option value="">Todas categorías</option>
@@ -135,7 +162,7 @@ export default function ItemList({ currentUser }) {
           <input required placeholder="¿Qué necesitas?" value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })} />
 
-          {isMercado && (
+          {isOtros && (
             <input type="number" min="1" placeholder="Cantidad" value={form.quantity}
               onChange={(e) => setForm({ ...form, quantity: parseInt(e.target.value) || 1 })} />
           )}
@@ -145,7 +172,7 @@ export default function ItemList({ currentUser }) {
               onChange={(e) => setForm({ ...form, url: e.target.value })} />
           )}
 
-          {isMercado && (
+          {isOtros && (
             <select value={form.category_id}
               onChange={(e) => setForm({ ...form, category_id: e.target.value })}>
               <option value="">Sin categoría</option>
@@ -155,10 +182,10 @@ export default function ItemList({ currentUser }) {
             </select>
           )}
 
-          {(isMercado || isOnline) && (
+          {(isOtros || isOnline) && (
             <select value={form.store_id}
               onChange={(e) => setForm({ ...form, store_id: e.target.value })}>
-              <option value="">{isMercado ? 'Sin tienda' : 'Sin tienda online'}</option>
+              <option value="">{isOtros ? 'Sin tienda' : 'Sin tienda online'}</option>
               {stores.map((s) => (
                 <option key={s.id} value={s.id}>{s.name}</option>
               ))}
@@ -175,6 +202,7 @@ export default function ItemList({ currentUser }) {
         {items.map((item) => {
           const domain = item.url ? extractDomain(item.url) : null
           const faviconUrl = domain ? `https://www.google.com/s2/favicons?domain=${domain}&sz=64` : null
+          const storeColor = getStoreColor(storeMap[item.store_id])
 
           return (
           <li key={item.id} className={`item ${item.checked ? 'checked' : ''}`}>
@@ -193,12 +221,13 @@ export default function ItemList({ currentUser }) {
             <div className="item-info">
               <span className="item-name">{item.name}</span>
               <span className="item-meta">
-                {isMercado && item.quantity > 1 && `×${item.quantity} `}
-                <span className={`item-tag ${tagClass}`}>
-                  {TABS.find(t => t.key === item.list_type)?.label}
-                </span>
-                {isMercado && catMap[item.category_id] && `· ${catMap[item.category_id]} `}
-                {storeMap[item.store_id] && `· ${storeMap[item.store_id]}`}
+                {isOtros && item.quantity > 1 && `×${item.quantity} `}
+                {storeMap[item.store_id] && (
+                  <span className="item-tag" style={{ background: `${storeColor}1a`, color: storeColor }}>
+                    {storeMap[item.store_id]}
+                  </span>
+                )}
+                {isOtros && catMap[item.category_id] && `· ${catMap[item.category_id]} `}
                 {item.notes && ` · ${item.notes}`}
               </span>
               {isOnline && item.url && (

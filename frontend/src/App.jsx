@@ -5,12 +5,14 @@ import UserSelector from './components/UserSelector'
 import ItemList from './components/ItemList'
 import CategoryManager from './components/CategoryManager'
 import StoreManager from './components/StoreManager'
+import ExportModal from './components/ExportModal'
 
 function App() {
   const [users, setUsers] = useState([])
   const [currentUser, setCurrentUser] = useState(null)
   const [loading, setLoading] = useState(true)
   const [usdRate, setUsdRate] = useState(null)
+  const [showExport, setShowExport] = useState(false)
 
   useEffect(() => {
     (async () => {
@@ -67,6 +69,7 @@ function App() {
           <NavLink to="/" end>Inicio</NavLink>
           <NavLink to="/categories">Categorías</NavLink>
           <NavLink to="/stores">Tiendas</NavLink>
+          <button className="nav-btn" onClick={() => setShowExport(true)}>Exportar</button>
         </nav>
       </header>
 
@@ -81,6 +84,8 @@ function App() {
           </Routes>
         )}
       </main>
+
+      {showExport && <ExportModal onClose={() => setShowExport(false)} />}
     </div>
   )
 }
