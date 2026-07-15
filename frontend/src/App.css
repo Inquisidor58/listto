@@ -222,20 +222,13 @@ body {
 .list-tab.tab-deseos.active { background: linear-gradient(135deg, #f59e0b, #d97706); }
 
 /* ─── FILTERS ─── */
-.filters {
-  display: flex;
-  gap: 6px;
-  margin-bottom: 12px;
-  flex-wrap: wrap;
-}
-
 .filters select {
   flex: 1;
-  min-width: 80px;
+  min-width: 100px;
   padding: 8px 10px;
   border: 1px solid rgba(203, 213, 225, 0.5);
   border-radius: 10px;
-  font-size: 16px;
+  font-size: 14px;
   background: rgba(255, 255, 255, 0.5);
   backdrop-filter: blur(8px);
   color: #1e293b;
