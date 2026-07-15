@@ -57,31 +57,31 @@ export default function ItemList({ currentUser }) {
 
   useEffect(() => {
     loadItems()
-  }, [listType, filterCat, filterStore, filterChecked])
+  }, [listType, filterCat, filterStore, filterChecked, currentUser?.id])
 
   const loadItems = async () => {
     const params = { list_type: listType }
     if (filterCat) params.category_id = filterCat
     if (filterStore) params.store_id = filterStore
     if (filterChecked !== '') params.checked = filterChecked === 'true'
+    if (currentUser?.id) params.user_id = currentUser.id
     try {
       const data = await api.getItems(params)
-      setItems(sortItems(data, listType))
+      setItems(data)
     } catch { setItems([]) }
   }
 
-  const sortItems = (data, type) => {
-    if (type !== 'mercado') return data
-    return [...data].sort((a, b) => {
-      const sa = (storeMap[a.store_id] || '').toLowerCase()
-      const sb = (storeMap[b.store_id] || '').toLowerCase()
-      if (sa !== sb) return sa.localeCompare(sb)
-      const ca = (catMap[a.category_id] || '').toLowerCase()
-      const cb = (catMap[b.category_id] || '').toLowerCase()
-      if (ca !== cb) return ca.localeCompare(cb)
-      return a.name.toLowerCase().localeCompare(b.name.toLowerCase())
-    })
-  }
+  const sortedItems = isMercado
+    ? [...items].sort((a, b) => {
+        const sa = (storeMap[a.store_id] || '').toLowerCase()
+        const sb = (storeMap[b.store_id] || '').toLowerCase()
+        if (sa !== sb) return sa.localeCompare(sb)
+        const ca = (catMap[a.category_id] || '').toLowerCase()
+        const cb = (catMap[b.category_id] || '').toLowerCase()
+        if (ca !== cb) return ca.localeCompare(cb)
+        return a.name.toLowerCase().localeCompare(b.name.toLowerCase())
+      })
+    : items
 
   const handleToggle = async (id) => {
     await api.toggleItem(id)
@@ -199,7 +199,7 @@ export default function ItemList({ currentUser }) {
       )}
 
       <ul className="items">
-        {items.map((item) => {
+        {sortedItems.map((item) => {
           const domain = item.url ? extractDomain(item.url) : null
           const faviconUrl = domain ? `https://www.google.com/s2/favicons?domain=${domain}&sz=64` : null
           const storeColor = getStoreColor(storeMap[item.store_id])
@@ -241,7 +241,7 @@ export default function ItemList({ currentUser }) {
           </li>
           )
         })}
-        {items.length === 0 && (
+        {sortedItems.length === 0 && (
           <li className="empty">
             <span className="empty-icon">📭</span>
             No hay nada aquí aún

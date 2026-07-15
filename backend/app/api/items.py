@@ -16,10 +16,11 @@ def list_items(
     list_type: Optional[ListType] = None,
     category_id: Optional[uuid.UUID] = None,
     store_id: Optional[uuid.UUID] = None,
+    user_id: Optional[uuid.UUID] = None,
     checked: Optional[bool] = None,
     service: ItemService = Depends(get_item_service),
 ):
-    return service.get_all(list_type, category_id, store_id, checked)
+    return service.get_all(list_type, category_id, store_id, user_id, checked)
 
 
 @router.get("/{item_id}", response_model=ItemResponse)

@@ -63,8 +63,8 @@ class ItemService:
     def __init__(self, repo: IItemRepository):
         self._repo = repo
 
-    def get_all(self, list_type: Optional[ListType] = None, category_id: Optional[uuid.UUID] = None, store_id: Optional[uuid.UUID] = None, checked: Optional[bool] = None) -> List[Item]:
-        return self._repo.get_all(list_type, category_id, store_id, checked)
+    def get_all(self, list_type: Optional[ListType] = None, category_id: Optional[uuid.UUID] = None, store_id: Optional[uuid.UUID] = None, user_id: Optional[uuid.UUID] = None, checked: Optional[bool] = None) -> List[Item]:
+        return self._repo.get_all(list_type, category_id, store_id, user_id, checked)
 
     def get_by_id(self, item_id: uuid.UUID) -> Optional[Item]:
         return self._repo.get_by_id(item_id)

@@ -237,7 +237,7 @@ class ItemRepository(IItemRepository):
     def _to_item(self, row):
         return _row_to_model("items", row, Item)
 
-    def get_all(self, list_type: Optional[ListType] = None, category_id: Optional[uuid.UUID] = None, store_id: Optional[uuid.UUID] = None, checked: Optional[bool] = None) -> List[Item]:
+    def get_all(self, list_type: Optional[ListType] = None, category_id: Optional[uuid.UUID] = None, store_id: Optional[uuid.UUID] = None, user_id: Optional[uuid.UUID] = None, checked: Optional[bool] = None) -> List[Item]:
         if USE_SUPABASE:
             from app.infrastructure.supabase import supabase_get as get
             params = {"select": "*", "order": "created_at.desc"}
@@ -247,6 +247,8 @@ class ItemRepository(IItemRepository):
                 params["category_id"] = f"eq.{category_id}"
             if store_id:
                 params["store_id"] = f"eq.{store_id}"
+            if user_id:
+                params["user_id"] = f"eq.{user_id}"
             if checked is not None:
                 params["checked"] = f"eq.{str(checked).lower()}"
             rows = get("items", params)
@@ -258,6 +260,8 @@ class ItemRepository(IItemRepository):
             query = query.where(Item.category_id == category_id)
         if store_id is not None:
             query = query.where(Item.store_id == store_id)
+        if user_id is not None:
+            query = query.where(Item.user_id == user_id)
         if checked is not None:
             query = query.where(Item.checked == checked)
         query = query.order_by(Item.created_at.desc())
