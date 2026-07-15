@@ -1,8 +1,7 @@
-fastapi==0.115.0
-uvicorn==0.30.0
-sqlalchemy==2.0.35
+fastapi
+uvicorn
+sqlalchemy
 pg8000==1.31.2
-pydantic==2.9.0
-pydantic-settings==2.5.0
-python-dotenv==1.0.1
-# httpx eliminado, el exchange rate usa urllib (built-in)
+pydantic
+pydantic-settings
+python-dotenv
