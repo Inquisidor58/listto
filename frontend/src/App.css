@@ -58,7 +58,7 @@ body {
   letter-spacing: -0.5px;
 }
 
-.logo { height: 32px; width: auto; display: block; }
+.logo { height: 36px; width: auto; display: block; }
 
 .exchange-rate {
   display: flex;
