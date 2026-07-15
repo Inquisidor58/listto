@@ -25,6 +25,8 @@ def _model_kwargs(model_obj):
             val = val.value
         elif isinstance(val, uuid.UUID):
             val = str(val)
+        elif isinstance(val, datetime):
+            val = val.isoformat()
         cols[c.name] = val
     return cols
 
@@ -261,6 +263,7 @@ class ItemRepository(IItemRepository):
             from app.infrastructure.supabase import supabase_insert as ins
             data = _model_kwargs(item)
             data.pop("id", None)
+            data.pop("created_at", None)
             row = ins("items", data)
             return self._to_item(row)
         self._session.add(item)
