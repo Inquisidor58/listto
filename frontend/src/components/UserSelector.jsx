@@ -1,12 +1,22 @@
 import { useState } from 'react'
 import { api } from '../services/api'
 
+const AVATAR_COLORS = ['#6366f1', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#ec4899', '#84cc16']
+
+function getAvatarColor(name) {
+  let hash = 0
+  for (let i = 0; i < (name || '').length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash)
+  return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length]
+}
+
 export default function UserSelector({ users, currentUser, onUserChange, onUsersUpdate }) {
   const [open, setOpen] = useState(false)
   const [alias, setAlias] = useState('')
   const [newName, setNewName] = useState('')
 
   const displayName = currentUser?.alias || currentUser?.name || 'Usuario'
+  const initials = displayName.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase()
+  const avatarColor = getAvatarColor(displayName)
 
   const handleCreate = async (e) => {
     e.preventDefault()
@@ -35,7 +45,7 @@ export default function UserSelector({ users, currentUser, onUserChange, onUsers
   return (
     <div className="user-selector">
       <button className="user-btn" onClick={() => { setOpen(!open); setAlias(currentUser?.alias || '') }}>
-        <span>👤</span> {displayName}
+        <span className="user-avatar" style={{ background: avatarColor }}>{initials}</span>
       </button>
 
       {open && (
@@ -50,6 +60,7 @@ export default function UserSelector({ users, currentUser, onUserChange, onUsers
                   className={currentUser?.id === u.id ? 'active' : ''}
                   onClick={() => handleSelect(u)}
                 >
+                  <span className="user-avatar-sm" style={{ background: getAvatarColor(u.alias || u.name) }}>{(u.alias || u.name).split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase()}</span>
                   {u.alias || u.name}
                 </li>
               ))}

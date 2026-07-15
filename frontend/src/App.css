@@ -100,19 +100,36 @@ body {
 /* ─── USER SELECTOR ─── */
 .user-selector { position: relative; }
 .user-btn {
-  display: flex; align-items: center; gap: 5px;
-  background: rgba(255, 255, 255, 0.7);
-  border: 1px solid rgba(203, 213, 225, 0.5);
-  padding: 5px 12px;
-  border-radius: 10px;
+  display: flex; align-items: center;
+  background: none;
+  border: none;
   cursor: pointer;
-  font-size: 0.8125rem;
-  color: #475569;
-  font-weight: 500;
-  transition: all 0.2s;
-  backdrop-filter: blur(8px);
+  padding: 0;
 }
-.user-btn:hover { background: rgba(255, 255, 255, 0.9); border-color: #cbd5e1; }
+.user-btn:hover { opacity: 0.8; }
+
+.user-avatar {
+  width: 38px; height: 38px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-weight: 700; font-size: 0.875rem;
+  letter-spacing: 0.5px;
+}
+
+.user-list li {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 16px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  color: #1e293b;
+  transition: background 0.15s;
+}
+
+.user-avatar-sm {
+  width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-weight: 700; font-size: 0.7rem;
+  flex-shrink: 0;
+}
 
 .user-dropdown {
   position: absolute;
@@ -189,7 +206,7 @@ body {
 .list-tabs {
   display: flex;
   gap: 8px;
-  margin-bottom: 16px;
+  margin-bottom: 8px;
 }
 
 .list-tab {
@@ -222,6 +239,14 @@ body {
 .list-tab.tab-deseos.active { background: linear-gradient(135deg, #f59e0b, #d97706); }
 
 /* ─── FILTERS ─── */
+.filters {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
 .filters select {
   flex: 1;
   min-width: 60px;
