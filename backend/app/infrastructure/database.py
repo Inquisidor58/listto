@@ -8,6 +8,11 @@ def _get_engine():
     url = settings.database_url
     if url.startswith("postgresql+asyncpg"):
         url = url.replace("+asyncpg", "+pg8000")
+    if "pg8000" in url and "sslmode" not in url:
+        sep = "&" if "?" in url else "?"
+        url = f"{url}{sep}sslmode=require"
+    if "pg8000" in url:
+        url = url.replace("%2A", "*").replace("%2a", "*")
     return create_engine(url, echo=False)
 
 
