@@ -2,7 +2,7 @@ from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
-    database_url: str = "sqlite+aiosqlite:///./shopping_list.db"
+    database_url: str = "sqlite:///./shopping_list.db"
     cors_origins: str = "*"
     app_title: str = "ListTo API"
     app_version: str = "0.1.0"
