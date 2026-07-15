@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.api import categories, exchange, health, items, stores, users
 from app.config import settings
-from app.infrastructure.database import engine, Base
+from app.infrastructure.database import create_tables
 
 app = FastAPI(title=settings.app_title, version=settings.app_version)
 
@@ -26,6 +26,6 @@ app.include_router(health.router)
 @app.on_event("startup")
 def on_startup():
     try:
-        Base.metadata.create_all(engine)
+        create_tables()
     except Exception as e:
-        print(f"[startup] DB connection failed: {e}")
+        print(f"[startup] {e}")

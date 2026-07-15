@@ -1,37 +1,26 @@
-from urllib.parse import quote, urlparse
-
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, sessionmaker, DeclarativeBase
 
 from app.config import settings
 
-
-def _get_engine():
-    url = settings.database_url
-    if "+asyncpg" in url:
-        url = url.replace("+asyncpg", "+pg8000")
-
-    if "pg8000" in url and "pooler" not in url and "db." in url:
-        parsed = urlparse(url)
-        pw = (parsed.password or "").replace("Li2025st2026%2A", "Li2026stToAPP").replace("Li2025st2026*", "Li2026stToAPP")
-        project_ref = parsed.hostname.replace("db.", "").replace(".supabase.co", "")
-        url = (
-            f"postgresql+pg8000://{project_ref}.{parsed.username}:{quote(pw, safe='')}"
-            f"@aws-0-us-east-2.pooler.supabase.com:6543/postgres"
-        )
-
-    return create_engine(url, echo=False)
-
-
-engine = _get_engine()
-SessionLocal = sessionmaker(engine, expire_on_commit=False)
+IS_SUPABASE = bool(settings.supabase_url and settings.supabase_key)
 
 
 class Base(DeclarativeBase):
     pass
 
 
+engine = None
+SessionLocal = None
+
+if not IS_SUPABASE:
+    engine = create_engine(settings.database_url, echo=False)
+    SessionLocal = sessionmaker(engine, expire_on_commit=False)
+
+
 def get_session():
+    if IS_SUPABASE:
+        raise NotImplementedError("Supabase mode doesn't use SQL sessions")
     db = SessionLocal()
     try:
         yield db
@@ -44,4 +33,5 @@ def get_session():
 
 
 def create_tables():
-    Base.metadata.create_all(engine)
+    if not IS_SUPABASE and engine is not None:
+        Base.metadata.create_all(engine)
