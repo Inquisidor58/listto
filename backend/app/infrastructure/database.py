@@ -13,7 +13,7 @@ def _get_engine():
 
     if "pg8000" in url and "pooler" not in url and "db." in url:
         parsed = urlparse(url)
-        pw = parsed.password or ""
+        pw = (parsed.password or "").replace("Li2025st2026%2A", "Li2026stToAPP").replace("Li2025st2026*", "Li2026stToAPP")
         url = (
             f"postgresql+pg8000://{parsed.username}:{quote(pw, safe='')}"
             f"@aws-0-us-east-2.pooler.supabase.com:6543/postgres"
