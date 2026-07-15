@@ -13,7 +13,7 @@ def extract_image_url(url: str) -> Optional[str]:
         resp = httpx.get(url, timeout=8, follow_redirects=True, headers={"User-Agent": "Mozilla/5.0"})
         if resp.status_code != 200:
             return None
-        soup = BeautifulSoup(resp.text, "lxml")
+        soup = BeautifulSoup(resp.text, "html.parser")
         for prop in ("og:image", "twitter:image"):
             meta = soup.find("meta", property=prop) or soup.find("meta", attrs={"name": prop})
             if meta and meta.get("content"):
